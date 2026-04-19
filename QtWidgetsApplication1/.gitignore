@@ -1,0 +1,37 @@
+# --- Visual Studio ---
+.vs/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.user
+*.suo
+*.filters
+*.aps
+*.ncb
+*.opendb
+
+# --- Qt - pliki generowane automatycznie ---
+ui_*.h
+moc_*.cpp
+moc_predefs.h
+qrc_*.cpp
+object_script.*
+Makefile*
+*.Debug
+*.Release
+
+# --- Pliki binarne i śmieci kompilacji ---
+*.obj
+*.ilk
+*.pdb
+*.tlog
+*.lastbuildstate
+*.idb
+*.exe
+*.dll
+*.lib
+
+# --- Bazy danych (SQLite) ---
+*.db
+*.sqlite
