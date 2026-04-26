@@ -54,3 +54,7 @@ GeneratedFiles/
 # --- Różne ---
 *.log
 .DS_Store
+
+x64/
+*.tlog
+*.log
