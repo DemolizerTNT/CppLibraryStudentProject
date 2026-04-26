@@ -35,3 +35,26 @@ Makefile*
 # --- Bazy danych (SQLite) ---
 *.db
 *.sqlite
+
+# --- SQLite (Pliki tymczasowe) ---
+# Kiedy baza wykonuje operacje, tworzy tymczasowe pliki obok głównego pliku .db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# --- Qt VS Tools ---
+# Rozszerzenie do Visual Studio często wrzuca pliki ui_ i moc_ do tego folderu
+GeneratedFiles/
+
+# --- Pliki konfiguracyjne Qt Creator / qmake (na wszelki wypadek) ---
+*.pro.user
+*.qmake.stash
+*.qmake.cache
+
+# --- Różne ---
+*.log
+.DS_Store
+
+x64/
+*.tlog
+*.log
