@@ -1,7 +1,13 @@
 ﻿   Qt/MSBuild: 3.5.0.0
+  Reading Qt configuration (C:/Qt/6.8.3/msvc2022_64/bin/qmake)
    Qt: 6.8.3
-  QtWidgetsApplication1.cpp
+  Bibliotekarz.cpp
+  LoginWindow.cpp
+  MainWindow.cpp
+  Użytkownik.cpp
+  Baza.cpp
+  Osoba.cpp
   main.cpp
-  qrc_QtWidgetsApplication1.cpp
-  moc_QtWidgetsApplication1.cpp
-  QtWidgetsApplication1.vcxproj -> C:\Projekty\CppGomułka\QtWidgetsApplication1\x64\Debug\QtWidgetsApplication1.exe
+  moc_MainWindow.cpp
+  moc_LoginWindow.cpp
+  QtWidgetsApplication1.vcxproj -> C:\Projekty\CppGomułka\CppLibraryStudentProject\QtWidgetsApplication1\x64\Debug\QtWidgetsApplication1.exe

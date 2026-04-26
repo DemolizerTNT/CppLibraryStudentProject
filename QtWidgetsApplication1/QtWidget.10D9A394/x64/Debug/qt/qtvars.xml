@@ -1,7 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
         <Qt_DEFINES_>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Qt_DEFINES_>
-    <Qt_INCLUDEPATH_>C:\Projekty\CppGomu?ka\QtWidgetsApplication1\QtWidget.10D9A394\x64\Debug\qt\qmake\0b6038245e734877bebcf4514ded74f5;C:\Qt\6.8.3\msvc2022_64\include;C:\Qt\6.8.3\msvc2022_64\include\QtWidgets;C:\Qt\6.8.3\msvc2022_64\include\QtGui;C:\Qt\6.8.3\msvc2022_64\include\QtCore;C:\Projekty\CppGomu?ka\QtWidgetsApplication1\QtWidget.10D9A394\x64\Debug\qt\qmake\0b6038245e734877bebcf4514ded74f5;C:\Qt\6.8.3\msvc2022_64\mkspecs\win32-msvc</Qt_INCLUDEPATH_>
+    <Qt_INCLUDEPATH_>C:\Projekty\CppGomu?ka\CppLibraryStudentProject\QtWidgetsApplication1\QtWidget.10D9A394\x64\Debug\qt\qmake\f4f6e9e04242487985977ed8dce54228;C:\Qt\6.8.3\msvc2022_64\include;C:\Qt\6.8.3\msvc2022_64\include\QtWidgets;C:\Qt\6.8.3\msvc2022_64\include\QtGui;C:\Qt\6.8.3\msvc2022_64\include\QtCore;C:\Projekty\CppGomu?ka\CppLibraryStudentProject\QtWidgetsApplication1\QtWidget.10D9A394\x64\Debug\qt\qmake\f4f6e9e04242487985977ed8dce54228;C:\Qt\6.8.3\msvc2022_64\mkspecs\win32-msvc</Qt_INCLUDEPATH_>
     <Qt_STDCPP_>stdcpp17</Qt_STDCPP_>
     <Qt_RUNTIME_>MultiThreadedDebugDLL</Qt_RUNTIME_>
     <Qt_CL_OPTIONS_>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -permissive- -Zc:__cplusplus -Zc:externConstexpr -utf-8</Qt_CL_OPTIONS_>
