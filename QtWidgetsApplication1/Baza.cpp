@@ -10,7 +10,15 @@ Baza::~Baza()
 
 bool Baza::connect()
 {
-	db = QSqlDatabase::addDatabase("SQLITE"); // Silnik bazy
+	if (QSqlDatabase::contains(QSqlDatabase::defaultConnection)) // sprawdzenie, czy przedtem by³o ju¿ po³¹czone
+	{
+		db = QSqlDatabase::database(QSqlDatabase::defaultConnection);
+	}
+	else
+	{
+		// Jeœli nie, tworzymy nowe
+		db = QSqlDatabase::addDatabase("SQLITE");
+	}
 	db.setDatabaseName("dbLibrary.db"); // Nazwa pliku bazy 
 
 	if (!db.open()) {
@@ -553,11 +561,11 @@ QList<QString> Baza::pobierzZwroty()
 	return zwroty;
 }
 
-bool Baza::akceptujZwrot(int id_z, int id_k)
+bool Baza::akceptujZwrot(int id_u, int id_z, int id_k)
 {
 	QSqlDatabase::database().transaction();
 
-	QSqlQuery kwerenda1, kwerenda2;
+	QSqlQuery kwerenda1, kwerenda2, kwerenda3;
 
 	kwerenda1.prepare("DELETE FROM Zwrot WHERE Id_zwrot =:id");
 	kwerenda1.bindValue(":id", id_z);
@@ -565,7 +573,12 @@ bool Baza::akceptujZwrot(int id_z, int id_k)
 	kwerenda2.prepare("UPDATE BazaKsiazek SET IloscDostepna = IloscDostepna + 1 WHERE Id_ksiazki = :id");
 	kwerenda2.bindValue(":id", id_k);
 
-	if (kwerenda1.exec() && kwerenda1.numRowsAffected() > 0 && kwerenda2.exec())
+	kwerenda3.prepare("INSERT INTO Historia(Id_uzyt, Id_ksiazki, Akcja, Data) VALUES (:id_u, :id_k, 'Potwierdzenie Oddania', :date);");
+	kwerenda3.bindValue(":id_u", id_u);
+	kwerenda3.bindValue(":id_k", id_k);
+	kwerenda3.bindValue(":date", QDate::currentDate());
+
+	if (kwerenda1.exec() && kwerenda1.numRowsAffected() > 0 && kwerenda2.exec() && kwerenda3.exec())
 	{
 		QSqlDatabase::database().commit();
 		qDebug() << "Pomyœlnie przyjêto!";

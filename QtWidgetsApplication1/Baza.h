@@ -73,5 +73,5 @@ public:
 	bool usunKsiazke(int id_k);
 	
 	QList<QString> pobierzZwroty(); // Wypisuje wszystkie zwroty
-	bool akceptujZwrot(int id_z, int id_k); // Potwierdza z ID tabeli Zwroty
+	bool akceptujZwrot(int id_u, int id_z, int id_k); // Potwierdza z ID tabeli Zwroty
 };
