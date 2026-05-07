@@ -1,16 +1,25 @@
 #include "Bibliotekarz.h"
 
+Bibliotekarz::Bibliotekarz()
+{
+
+}
+
+Bibliotekarz::~Bibliotekarz()
+{
+}
+
 Bibliotekarz::Bibliotekarz(Baza& bazaRef, DaneUzytkownika noweDane) : Osoba(bazaRef, noweDane)
 {
 
 }
 
-void Bibliotekarz::wypoLista(int id, bool dostep, QSqlQueryModel* model)
+QList<DaneWypozyczen> Bibliotekarz::wypoLista(int id, bool dostep)
 {
-	db.wypozyczenia(id, dostep, model);
+	return db.wypozyczenia(id, dostep);
 }
 
-QList<QString> Bibliotekarz::histoLista(int id, bool dostep)
+QList<DaneHistorii> Bibliotekarz::histoLista(int id, bool dostep)
 {
 	return db.pobierzHistorie(id, dostep);
 }
@@ -50,9 +59,14 @@ bool Bibliotekarz::wyrzucKsiazke(int id_k)
 	return db.usunKsiazke(id_k);
 }
 
-QList<QString> Bibliotekarz::zwrotyLista()
+QList<DaneZwrotu> Bibliotekarz::zwrotyLista()
 {
 	return db.pobierzZwroty();
+}
+
+DaneZwrotu Bibliotekarz::pobZwr(int id_z)
+{
+	return db.pobierzZwrot(id_z);
 }
 
 bool Bibliotekarz::akceptZwroty(int id_u, int id_z, int id_k)

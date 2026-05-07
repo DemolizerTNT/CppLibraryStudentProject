@@ -5,11 +5,14 @@
 class Uzytkownik : public Osoba
 {
 public:
+	Uzytkownik();
+	~Uzytkownik();
+
 	Uzytkownik(Baza& bazaRef, DaneUzytkownika noweDane);
 
-	void wypozyczLista(QSqlQueryModel* model);
-	QList<QString> historiaLista();
+	QList<DaneWypozyczen> wypozyczLista(int id, bool dostep);
+	QList<DaneHistorii> historiaLista(int id);
 	bool edycjaKonta(DaneUzytkownika noweDane);
 	bool wypoKsiazke(int id_ksiazki);
-	bool dodZwrot(int id_ksiazki);
+	bool dodZwrot(int id_u, int id_ksiazki, int id_w);
 };

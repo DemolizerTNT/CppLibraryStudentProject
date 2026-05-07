@@ -32,9 +32,6 @@
     <ClCompile Include="Osoba.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Użytkownik.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Bibliotekarz.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,6 +39,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Uzytkownik.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -55,7 +55,7 @@
     <ClInclude Include="Osoba.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Użytkownik.h">
+    <ClInclude Include="Uzytkownik.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

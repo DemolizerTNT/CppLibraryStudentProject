@@ -1,5 +1,9 @@
 #include "Osoba.h"
 
+Osoba::Osoba()
+{
+
+}
 
 Osoba::Osoba(Baza& dbRef, DaneUzytkownika dane): db(dbRef), daneKonta(dane)
 {

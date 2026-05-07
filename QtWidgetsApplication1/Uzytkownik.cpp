@@ -1,18 +1,26 @@
 #include "Uzytkownik.h"
 
+Uzytkownik::Uzytkownik()
+{
+}
+
+Uzytkownik::~Uzytkownik()
+{
+}
+
 Uzytkownik::Uzytkownik(Baza& bazaRef, DaneUzytkownika noweDane) : Osoba(bazaRef, noweDane)
 {
 
 }
 
-void Uzytkownik::wypozyczLista(QSqlQueryModel* model)
+QList<DaneWypozyczen> Uzytkownik::wypozyczLista(int id, bool dostep)
 {
-	db.wypozyczenia(this->getId(), model);
+	return db.wypozyczenia(id, dostep);
 }
 
-QList<QString> Uzytkownik::historiaLista()
+QList<DaneHistorii> Uzytkownik::historiaLista(int id)
 {
-	return db.pobierzHistorie(this->getId());
+	return db.pobierzHistorie(id);
 }
 
 bool Uzytkownik::edycjaKonta(DaneUzytkownika noweDane)
@@ -25,7 +33,7 @@ bool Uzytkownik::wypoKsiazke(int id_ksiazki)
 	return db.wypozyczKsiazke(this->getId(), id_ksiazki);
 }
 
-bool Uzytkownik::dodZwrot(int id_ksiazki)
+bool Uzytkownik::dodZwrot(int id_u, int id_ksiazki, int id_w)
 {
-	return db.dodajZwrot(this->getId(), id_ksiazki);
+	return db.dodajZwrot(id_u, id_ksiazki, id_w);
 }

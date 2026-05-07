@@ -1,33 +1,11 @@
 #include "Baza.h"
-#include <QDebug> // b≥Ídy do konsoli
+#include <QDebug> // b≈Çƒôdy do konsoli
 
 Baza::Baza() {};
 
 Baza::~Baza()
 {
 	if (db.isOpen()) db.close();
-}
-
-bool Baza::connect()
-{
-	if (QSqlDatabase::contains(QSqlDatabase::defaultConnection)) // sprawdzenie, czy przedtem by≥o juø po≥πczone
-	{
-		db = QSqlDatabase::database(QSqlDatabase::defaultConnection);
-	}
-	else
-	{
-		// Jeúli nie, tworzymy nowe
-		db = QSqlDatabase::addDatabase("SQLITE");
-	}
-	db.setDatabaseName("dbLibrary.db"); // Nazwa pliku bazy 
-
-	if (!db.open()) {
-		qDebug() << "B≥πd ≥πczenia z bazπ: " << db.lastError().text(); // W przypadku problemu z po≥πczeniem, w konsoli wyúwietla siÍ b≥πd
-		return false;
-	}
-
-	qDebug() << "Po≥πczono siÍ pomyúlnie z bazπ!";
-	return true;
 }
 
 bool Baza::createTables()
@@ -38,7 +16,7 @@ bool Baza::createTables()
 	if (!kwerenda.exec("CREATE TABLE IF NOT EXISTS Uzytkownicy("
 		"Id_dane INTEGER PRIMARY KEY AUTOINCREMENT, Imie TEXT, Nazwisko TEXT, "
 		"Email TEXT, Haslo TEXT, Rola TEXT, DataDodania TEXT, Aktywne INTEGER)")) {
-		qDebug() << "B≥πd tworzenia tabeli Uzytkownicy: " << kwerenda.lastError().text();
+		qDebug() << "B≈ÇƒÖd tworzenia tabeli Uzytkownicy: " << kwerenda.lastError().text();
 		return false;
 	}
 
@@ -46,15 +24,15 @@ bool Baza::createTables()
 	if (!kwerenda.exec("CREATE TABLE IF NOT EXISTS Wypozyczenia("
 		"Id_wyp INTEGER PRIMARY KEY AUTOINCREMENT, Id_uzyt INTEGER, "
 		"Id_ksiazki INTEGER, DataWypozyczenia TEXT, TerminOddania TEXT, Status TEXT)")) {
-		qDebug() << "B≥πd tworzenia tabeli Wypozyczenia: " << kwerenda.lastError().text();
+		qDebug() << "B≈ÇƒÖd tworzenia tabeli Wypozyczenia: " << kwerenda.lastError().text();
 		return false;
 	}
 
 	// BazaKsiazek
 	if (!kwerenda.exec("CREATE TABLE IF NOT EXISTS BazaKsiazek("
 		"Id_ksiazki INTEGER PRIMARY KEY AUTOINCREMENT, Nazwa TEXT, "
-		"Autor TEXT, Ocena REAL, Kategoria TEXT, IloscDostepna INTEGER, IloscOgolna INTEGER)")) {
-		qDebug() << "B≥πd tworzenia tabeli BazaKsiazek: " << kwerenda.lastError().text();
+		"Autor TEXT, Ocena REAL, Kategoria TEXT, Opis TEXT, Wypozyczenia INT, IloscDostepna INTEGER, IloscOgolna INTEGER)")) {
+		qDebug() << "B≈ÇƒÖd tworzenia tabeli BazaKsiazek: " << kwerenda.lastError().text();
 		return false;
 	}
 
@@ -62,18 +40,45 @@ bool Baza::createTables()
 	if (!kwerenda.exec("CREATE TABLE IF NOT EXISTS Historia("
 		"Id_historia INTEGER PRIMARY KEY AUTOINCREMENT, Id_uzyt INTEGER, "
 		"Id_ksiazki INTEGER, Akcja TEXT, Data TEXT)")) {
-		qDebug() << "B≥πd tworzenia tabeli Historia: " << kwerenda.lastError().text();
+		qDebug() << "B≈ÇƒÖd tworzenia tabeli Historia: " << kwerenda.lastError().text();
 		return false;
 	}
 
 	// Zwrot
 	if (!kwerenda.exec("CREATE TABLE IF NOT EXISTS Zwrot("
 		"Id_zwrot INTEGER PRIMARY KEY AUTOINCREMENT, Id_uzyt INTEGER, Id_ksiazki INTEGER, DataOddania TEXT)")) {
-		qDebug() << "B≥πd tworzenia tabeli Zwrot: " << kwerenda.lastError().text();
+		qDebug() << "B≈ÇƒÖd tworzenia tabeli Zwrot: " << kwerenda.lastError().text();
 		return false;
 	}
 
-	qDebug() << "Wszystkie tabele zosta≥y pomyúlnie utworzone lub juø istnia≥y";
+	qDebug() << "Wszystkie tabele zosta≈Çy pomy≈õlnie utworzone lub ju≈º istnia≈Çy";
+	return true;
+}
+
+bool Baza::connect()
+{
+	if (QSqlDatabase::contains(QSqlDatabase::defaultConnection)) // sprawdzenie, czy przedtem by≈Ço ju≈º po≈ÇƒÖczone
+	{
+		db = QSqlDatabase::database(QSqlDatabase::defaultConnection);
+	}
+	else
+	{
+		// Je≈õli nie, tworzymy nowe
+		db = QSqlDatabase::addDatabase("QSQLITE");
+	}
+	db.setDatabaseName("dbLibrary.db"); // Nazwa pliku bazy 
+
+	if (!db.open()) {
+		qDebug() << "B≈ÇƒÖd ≈ÇƒÖczenia z bazƒÖ: " << db.lastError().text(); // W przypadku problemu z po≈ÇƒÖczeniem, w konsoli wy≈õwietla siƒô b≈ÇƒÖd
+		return false;
+	}
+
+	qDebug() << "Po≈ÇƒÖczono siƒô pomy≈õlnie z bazƒÖ!";
+
+	if (createTables()) {
+		qDebug() << "Struktura bazy danych jest gotowa.";
+	}
+
 	return true;
 }
 
@@ -82,8 +87,8 @@ QList<DaneUzytkownika> Baza::pobierzKontaLogowania()
 	QSqlQuery kwerenda;
 	QList<DaneUzytkownika> listaKont;
 
-	if (!kwerenda.exec("SELECT Id_dane, Imie, Nazwisko, Email FROM Uzytkownicy WHERE Aktywne = 1")){
-		qDebug() << "B≥πd pobierania danych konta: " << kwerenda.lastError().text();
+	if (!kwerenda.exec("SELECT Id_dane, Imie, Nazwisko, Email, Rola FROM Uzytkownicy WHERE Aktywne = 1")){
+		qDebug() << "B≈ÇƒÖd pobierania danych konta: " << kwerenda.lastError().text();
 		return listaKont;
 	}
 
@@ -94,6 +99,7 @@ QList<DaneUzytkownika> Baza::pobierzKontaLogowania()
 		temp.imie = kwerenda.value("Imie").toString();
 		temp.nazwisko = kwerenda.value("Nazwisko").toString();
 		temp.email = kwerenda.value("Email").toString();
+		temp.rola = kwerenda.value("Rola").toString();
 
 		listaKont.append(temp); // Dodanie do listy
 	}
@@ -110,7 +116,7 @@ int Baza::zaloguj(QString email, QString haslo)
 	kwerenda.bindValue(":haslo", haslo);
 
 	if (!kwerenda.exec()) {
-		qDebug() << "B≥πd logowania " << kwerenda.lastError().text();
+		qDebug() << "B≈ÇƒÖd logowania " << kwerenda.lastError().text();
 		return -1;
 	}
 	if (kwerenda.next()) return kwerenda.value("Id_dane").toInt();
@@ -125,7 +131,8 @@ bool Baza::sprawdzUprawnienia(int id)
 	kwerenda.bindValue(":id", id);
 
 	if (!kwerenda.exec()) {
-		qDebug() << "B≥πd bazy podczas sprawdzania uprawnieÒ: " << kwerenda.lastError().text();
+		qDebug() << "B≈ÇƒÖd bazy podczas sprawdzania uprawnie≈Ñ: " << kwerenda.lastError().text();
+		;
 		return false;
 	}
 	if (kwerenda.next()) return true;
@@ -133,52 +140,79 @@ bool Baza::sprawdzUprawnienia(int id)
 	return false;
 }
 
-void Baza::wypozyczenia(int id, QSqlQueryModel* model)
+QList<DaneWypozyczen> Baza::wypozyczenia(int id)
 {
-	wypozyczenia(id, false, model);
+	return wypozyczenia(id, false);
 }
 
-void Baza::wypozyczenia(int id, bool dostep, QSqlQueryModel* model)
+QList<DaneWypozyczen> Baza::wypozyczenia(int id, bool dostep)
 {
-	if (!model) return;
-
 	QSqlQuery kwerenda;
+	QList<DaneWypozyczen> wypo;
 
-	if (!dostep || id!=-1)
+	if (!dostep || id!=0)
 	{
-		kwerenda.prepare("SELECT Id_wyp, Id_uzyt, Id_ksiazki, DataWypozyczenia, TerminOddania, Status FROM Wypozyczenia WHERE id_uzyt = :id");
+		kwerenda.prepare("SELECT w.Id_wyp, w.Id_uzyt, w.Id_ksiazki, k.Nazwa, w.DataWypozyczenia, w.TerminOddania, w.Status FROM Wypozyczenia w join BazaKsiazek k on w.Id_ksiazki = k.Id_ksiazki WHERE w.Status != 'Zwr√≥cona' AND w.id_uzyt = :id");
 		kwerenda.bindValue(":id", id);
 	}
 	else
 	{
-		kwerenda.prepare("SELECT Id_wyp, Id_uzyt, Id_ksiazki, DataWypozyczenia, TerminOddania, Status FROM Wypozyczenia");
+		kwerenda.prepare("SELECT w.Id_wyp, w.Id_uzyt, w.Id_ksiazki, k.Nazwa, w.DataWypozyczenia, w.TerminOddania, w.Status FROM Wypozyczenia w join BazaKsiazek k on w.Id_ksiazki = k.Id_ksiazki WHERE w.Status != 'Zwr√≥cona'");
 	}
 
 	if (!kwerenda.exec()) {
-		qDebug() << "B≥πd pobierania listy wypoøyczeÒ: " << kwerenda.lastError().text();
+		qDebug() << "B≈ÇƒÖd pobierania listy wypo≈ºycze≈Ñ: " << kwerenda.lastError().text();
+		return wypo;
 	}
 
-	model->setQuery(std::move(kwerenda));
+	while (kwerenda.next())
+	{
+		DaneWypozyczen temp;
 
+		temp.id_w = kwerenda.value("Id_wyp").toInt();
+		temp.id_u = kwerenda.value("Id_uzyt").toInt();
+		temp.id_k = kwerenda.value("Id_ksiazki").toInt();
+		temp.nazwa = kwerenda.value("Nazwa").toString();
+		temp.wypoz = kwerenda.value("DataWypozyczenia").toDate();
+		temp.terOdd = kwerenda.value("TerminOddania").toDate();
+		temp.Status = kwerenda.value("Status").toString();
+
+		wypo.append(temp);
+	}
+
+	return wypo;
 }
 
-void Baza::pobierzBiblioteke(QSqlQueryModel* model)
+QList<DaneKsiazki> Baza::pobierzBiblioteke()
 {
-	if (!model) return; // zabezpieczenie przed crashem
-
 	QSqlQuery kwerenda;
-	//QSqlQueryModel* model = new QSqlQueryModel();
+	QList<DaneKsiazki> listaBiblioteki;
 
-	kwerenda.prepare("SELECT Id_ksiazki, Nazwa, Autor, Ocena, Kategoria, IloscOgolna, IloscDostepna FROM BazaKsiazek");
+	kwerenda.prepare("SELECT Id_ksiazki, Nazwa, Autor, Ocena, Kategoria, Wypozyczenia, IloscOgolna, IloscDostepna FROM BazaKsiazek");
 
 	if (!kwerenda.exec()) {
-		qDebug() << "B≥πd pobierania biblioteki: " << kwerenda.lastError().text();
-		return;
+		qDebug() << "B≈ÇƒÖd pobierania biblioteki: " << kwerenda.lastError().text();
+		return listaBiblioteki;
+	}
+	
+	while (kwerenda.next())
+	{
+		DaneKsiazki temp;
+
+		temp.id_k = kwerenda.value("Id_ksiazki").toInt();
+		temp.nazwa = kwerenda.value("Nazwa").toString();
+		temp.autor = kwerenda.value("Autor").toString();
+		temp.ocena = kwerenda.value("Ocena").toFloat();
+		temp.kategoria = kwerenda.value("Kategoria").toString();
+		temp.wypozyczenia = kwerenda.value("Wypozyczenia").toInt();
+		temp.ilosc_ogolna = kwerenda.value("IloscOgolna").toInt();
+		temp.ilosc_dostepna = kwerenda.value("IloscDostepna").toInt();
+
+
+		listaBiblioteki.append(temp);
 	}
 
-	model->setQuery(std::move(kwerenda));
-
-	return;
+	return listaBiblioteki;
 }
 
 DaneKsiazki Baza::pobierzKsiazke(int id_k)
@@ -186,11 +220,11 @@ DaneKsiazki Baza::pobierzKsiazke(int id_k)
 	QSqlQuery kwerenda;
 	DaneKsiazki temp;
 
-	kwerenda.prepare("SELECT Id_ksiazki, Nazwa, Autor, Ocena, Kategoria, IloscOgolna, IloscDostepna FROM BazaKsiazek WHERE id_ksiazki = :id");
+	kwerenda.prepare("SELECT Id_ksiazki, Nazwa, Autor, Ocena, Kategoria, Opis, Wypozyczenia, IloscOgolna, IloscDostepna FROM BazaKsiazek WHERE id_ksiazki = :id");
 	kwerenda.bindValue(":id", id_k);
 
 	if (!kwerenda.exec()) {
-		qDebug() << "B≥πd pobierania danych ksiπøki: " << kwerenda.lastError().text();
+		qDebug() << "B≈ÇƒÖd pobierania danych ksiƒÖ≈ºki: " << kwerenda.lastError().text();
 		return temp;
 	}
 
@@ -200,8 +234,35 @@ DaneKsiazki Baza::pobierzKsiazke(int id_k)
 		temp.autor = kwerenda.value("Autor").toString();
 		temp.ocena = kwerenda.value("Ocena").toFloat();
 		temp.kategoria = kwerenda.value("Kategoria").toString();
+		temp.opis = kwerenda.value("Opis").toString();
 		temp.ilosc_ogolna = kwerenda.value("IloscOgolna").toInt();
 		temp.ilosc_dostepna = kwerenda.value("IloscDostepna").toInt();
+	}
+
+	return temp;
+}
+
+DaneWypozyczen Baza::pobierzWypozyczenie(int id)
+{
+	QSqlQuery kwerenda;
+	DaneWypozyczen temp;
+
+	kwerenda.prepare("SELECT w.Id_wyp, w.Id_uzyt, w.Id_ksiazki, k.Nazwa, w.DataWypozyczenia, w.TerminOddania, w.Status FROM Wypozyczenia w join BazaKsiazek k on w.Id_ksiazki = k.Id_ksiazki WHERE w.Id_wyp = :id");
+	kwerenda.bindValue(":id", id);
+
+	if (!kwerenda.exec()) {
+		qDebug() << "B≈ÇƒÖd pobierania danych konta: " << kwerenda.lastError().text();
+		return temp;
+	}
+
+	if (kwerenda.next()) {
+		temp.id_w = kwerenda.value("Id_wyp").toInt();
+		temp.id_u = kwerenda.value("Id_uzyt").toInt();
+		temp.id_k = kwerenda.value("Id_ksiazki").toInt();
+		temp.nazwa = kwerenda.value("Nazwa").toString();
+		temp.wypoz = kwerenda.value("DataWypozyczenia").toDate();
+		temp.terOdd = kwerenda.value("TerminOddania").toDate();
+		temp.Status = kwerenda.value("Status").toString();
 	}
 
 	return temp;
@@ -216,7 +277,7 @@ DaneUzytkownika Baza::pobierzKonto(int id)
 	kwerenda.bindValue(":id", id);
 
 	if (!kwerenda.exec()) {
-		qDebug() << "B≥πd pobierania danych konta: " << kwerenda.lastError().text();
+		qDebug() << "B≈ÇƒÖd pobierania danych konta: " << kwerenda.lastError().text();
 		return temp;
 	}
 
@@ -242,7 +303,7 @@ QList<DaneUzytkownika> Baza::pobierzKonta()
 	kwerenda.prepare("SELECT Id_dane, Imie, Nazwisko, Email, Haslo, Rola, DataDodania, Aktywne FROM Uzytkownicy");
 
 	if (!kwerenda.exec()) {
-		qDebug() << "B≥πd pobierania danych konta: " << kwerenda.lastError().text();
+		qDebug() << "B≈ÇƒÖd pobierania danych konta: " << kwerenda.lastError().text();
 		return listaKont;
 	}
 
@@ -264,52 +325,51 @@ QList<DaneUzytkownika> Baza::pobierzKonta()
 	return listaKont;
 }
 
-QList<QString> Baza::pobierzHistorie(int id)
+QList<DaneHistorii> Baza::pobierzHistorie(int id)
 {
 	return pobierzHistorie(id, false);
 }
 
-QList<QString> Baza::pobierzHistorie(int id, bool dostep)
+QList<DaneHistorii> Baza::pobierzHistorie(int id, bool dostep)
 {
 	QSqlQuery kwerenda;
-	QList<QString> historia;
+	QList<DaneHistorii> historia;
 
-	if (!dostep || id != -1)
+	if (!dostep || id != 0)
 	{
-		kwerenda.prepare("SELECT h.Id_historia, u.Imie, u.Nazwisko, k.Nazwa, h.Akcja, h.Data FROM Historia h join Uzytkownicy u on u.Id_dane = h.Id_uzyt join BazaKsiazek k on k.Id_ksiazki = h.Id_ksiazki WHERE h.Id_uzyt = :id");
+		kwerenda.prepare("SELECT h.Id_historia, u.Id_dane, u.Imie, u.Nazwisko, k.Id_ksiazki, k.Nazwa, h.Akcja, h.Data FROM Historia h join Uzytkownicy u on u.Id_dane = h.Id_uzyt join BazaKsiazek k on k.Id_ksiazki = h.Id_ksiazki WHERE h.Id_uzyt = :id");
 		kwerenda.bindValue(":id", id);
 	}
 	else
 	{
-		kwerenda.prepare("SELECT h.Id_historia, u.Imie, u.Nazwisko, k.Nazwa, h.Akcja, h.Data FROM Historia h join Uzytkownicy u on u.Id_dane = h.Id_uzyt join BazaKsiazek k on k.Id_ksiazki = h.Id_ksiazki");
+		kwerenda.prepare("SELECT h.Id_historia, u.Id_dane, u.Imie, u.Nazwisko, k.Id_ksiazki, k.Nazwa, h.Akcja, h.Data FROM Historia h join Uzytkownicy u on u.Id_dane = h.Id_uzyt join BazaKsiazek k on k.Id_ksiazki = h.Id_ksiazki");
 	}
 
 	if (!kwerenda.exec()) {
-		qDebug() << "B≥πd pobierania historii: " << kwerenda.lastError().text();
+		qDebug() << "B≈ÇƒÖd pobierania historii: " << kwerenda.lastError().text();
 		return historia;
 	}
 
 	while (kwerenda.next())
-	{
-		int id_h = kwerenda.value("Id_historia").toInt();
-		/*int id_u = kwerenda.value("Id_uzyt").toInt();
-		int id_k = kwerenda.value("Id_ksiazki").toInt();*/
-		QString im = kwerenda.value("Imie").toString();
-		QString naz = kwerenda.value("Nazwisko").toString();
-		QString ksi = kwerenda.value("Nazwa").toString();
-		QString akcja = kwerenda.value("Akcja").toString();
-		QString data = kwerenda.value("Data").toString();
+	{	
+		DaneHistorii temp;
 
-		/*DaneUzytkownika temp2 = pobierzKonto(id_u);
-		DaneKsiazki temp3 = pobierzKsiazke(id_k);*/
-		QString temp = QString("%1. Uøytkownik %2 %3 dokona≥: %4 z: %5 w dniu %6").arg(id_h).arg(im).arg(naz).arg(akcja).arg(ksi).arg(data);
+		temp.id_h = kwerenda.value("Id_historia").toInt();
+		temp.id_u = kwerenda.value("Id_dane").toInt();
+		temp.id_k = kwerenda.value("Id_ksiazki").toInt();
+		temp.im = kwerenda.value("Imie").toString();
+		temp.naz = kwerenda.value("Nazwisko").toString();
+		temp.nazwa = kwerenda.value("Nazwa").toString();
+		temp.akcja = kwerenda.value("Akcja").toString();
+		temp.data = kwerenda.value("Data").toDate();
+
 		historia.append(temp);
 	}
 
 	return historia;
 }
 
-bool Baza::edytujDaneKonta(int id, DaneUzytkownika noweDane) // Uøytkownik
+bool Baza::edytujDaneKonta(int id, DaneUzytkownika noweDane) // U≈ºytkownik
 {
 	QSqlQuery kwerenda;
 
@@ -322,11 +382,11 @@ bool Baza::edytujDaneKonta(int id, DaneUzytkownika noweDane) // Uøytkownik
 
 	if (!kwerenda.exec())
 	{
-		qDebug() << "B≥ad aktualizowania danych uøytkownika: " << kwerenda.lastError().text();
+		qDebug() << "B≈Çad aktualizowania danych u≈ºytkownika: " << kwerenda.lastError().text();
 		return false;
 	}
 
-	qDebug() << "Pomyúlnie zaktualizowano!";
+	qDebug() << "Pomy≈õlnie zaktualizowano!";
 	return true;
 }
 
@@ -345,11 +405,11 @@ bool Baza::edytujKonto(int id, DaneUzytkownika noweDane) // Bibliotekarz
 
 	if (!kwerenda.exec())
 	{
-		qDebug() << "B≥ad aktualizowania danych uøytkownika: " << kwerenda.lastError().text();
+		qDebug() << "B≈Çad aktualizowania danych u≈ºytkownika: " << kwerenda.lastError().text();
 		return false;
 	}
 
-	qDebug() << "Pomyúlnie zaktualizowano!";
+	qDebug() << "Pomy≈õlnie zaktualizowano!";
 	return true;
 }
 
@@ -365,15 +425,15 @@ bool Baza::dodajKonto(DaneUzytkownika noweDane)
 	kwerenda.bindValue(":haslo", noweDane.haslo);
 	kwerenda.bindValue(":rola", noweDane.rola);
 	kwerenda.bindValue(":data", noweDane.dodanie);
-	kwerenda.bindValue(":active", noweDane.aktywne);
+	kwerenda.bindValue(":active", 1);
 
 	if (!kwerenda.exec())
 	{
-		qDebug() << "B≥ad dodawania konta: " << kwerenda.lastError().text();
+		qDebug() << "B≈Çad dodawania konta: " << kwerenda.lastError().text();
 		return false;
 	}
 
-	qDebug() << "Pomyúlnie dodano!";
+	qDebug() << "Pomy≈õlnie dodano!";
 	return true;
 }
 
@@ -386,34 +446,36 @@ bool Baza::dezaktywujKonto(int id)
 
 	if (!kwerenda.exec())
 	{
-		qDebug() << "B≥ad dezaktywacji konta: " << kwerenda.lastError().text();
+		qDebug() << "B≈Çad dezaktywacji konta: " << kwerenda.lastError().text();
 		return false;
 	}
 
-	qDebug() << "Pomyúlnie dezaktywowano!";
+	qDebug() << "Pomy≈õlnie dezaktywowano!";
 	return true;
 }
 
 bool Baza::dodajKsiazke(DaneKsiazki noweDane)
 {
 	QSqlQuery kwerenda;
-
-	kwerenda.prepare("INSERT INTO BazaKsiazek(Nazwa, Autor, Ocena, Kategoria, IloscDostepna, IloscOgolna) "
-		"VALUES (:nazwa, :autor, :ocena, :kat, :dos, :ogo);");
+	
+	kwerenda.prepare("INSERT INTO BazaKsiazek(Nazwa, Autor, Ocena, Kategoria, Opis, Wypozyczenia, IloscDostepna, IloscOgolna) "
+		"VALUES (:nazwa, :autor, :ocena, :kat, :opi, :wyp, :dos, :ogo);");
 	kwerenda.bindValue(":nazwa", noweDane.nazwa);
 	kwerenda.bindValue(":autor", noweDane.autor);
 	kwerenda.bindValue(":ocena", noweDane.ocena);
 	kwerenda.bindValue(":kat", noweDane.kategoria);
-	kwerenda.bindValue(":dos", noweDane.ilosc_dostepna);
+	kwerenda.bindValue(":opi", noweDane.opis);
+	kwerenda.bindValue(":wyp", 0);
+	kwerenda.bindValue(":dos", noweDane.ilosc_ogolna);
 	kwerenda.bindValue(":ogo", noweDane.ilosc_ogolna);
 
 	if (!kwerenda.exec())
 	{
-		qDebug() << "B≥ad dodawania ksiπøki: " << kwerenda.lastError().text();
+		qDebug() << "B≈Çad dodawania ksiƒÖ≈ºki: " << kwerenda.lastError().text();
 		return false;
 	}
 
-	qDebug() << "Pomyúlnie dodano!";
+	qDebug() << "Pomy≈õlnie dodano!";
 	return true;
 }
 
@@ -421,22 +483,23 @@ bool Baza::edytujKsiazke(int id_k, DaneKsiazki noweDane)
 {
 	QSqlQuery kwerenda;
 
-	kwerenda.prepare("UPDATE BazaKsiazek SET Nazwa = :nazwa, Autor = :autor, Ocena = :ocena, Kategoria = :kat, IloscDostepna = :dos, IloscOgolna = :ogo WHERE Id_ksiazki = :id");
+	kwerenda.prepare("UPDATE BazaKsiazek SET Nazwa = :nazwa, Autor = :autor, Ocena = :ocena, Kategoria = :kat, Opis = :opis, IloscDostepna = :dos, IloscOgolna = :ogo WHERE Id_ksiazki = :id");
 	kwerenda.bindValue(":nazwa", noweDane.nazwa);
 	kwerenda.bindValue(":autor", noweDane.autor);
 	kwerenda.bindValue(":ocena", noweDane.ocena);
 	kwerenda.bindValue(":kat", noweDane.kategoria);
+	kwerenda.bindValue(":opis", noweDane.opis);
 	kwerenda.bindValue(":dos", noweDane.ilosc_dostepna);
 	kwerenda.bindValue(":ogo", noweDane.ilosc_ogolna);
 	kwerenda.bindValue(":id", id_k);
 
 	if (!kwerenda.exec())
 	{
-		qDebug() << "B≥ad edycji ksiπøki: " << kwerenda.lastError().text();
+		qDebug() << "B≈Çad edycji ksiƒÖ≈ºki: " << kwerenda.lastError().text();
 		return false;
 	}
 
-	qDebug() << "Pomyúlnie edytowano!";
+	qDebug() << "Pomy≈õlnie edytowano!";
 	return true;
 }
 
@@ -449,11 +512,11 @@ bool Baza::usunKsiazke(int id_k)
 
 	if (!kwerenda.exec())
 	{
-		qDebug() << "B≥ad wy≥πczenia ksiπøki: " << kwerenda.lastError().text();
+		qDebug() << "B≈Çad wy≈ÇƒÖczenia ksiƒÖ≈ºki: " << kwerenda.lastError().text();
 		return false;
 	}
 
-	qDebug() << "Pomyúlnie wy≥πczono!";
+	qDebug() << "Pomy≈õlnie wy≈ÇƒÖczono!";
 	return true;
 }
 
@@ -463,18 +526,18 @@ bool Baza::wypozyczKsiazke(int id_u, int id_k)
 
 	QSqlQuery kwerenda1, kwerenda2, kwerenda3;
 
-	kwerenda1.prepare("UPDATE BazaKsiazek SET IloscDostepna = IloscDostepna - 1 WHERE Id_ksiazki = :id AND IloscDostepna > 0");
+	kwerenda1.prepare("UPDATE BazaKsiazek SET IloscDostepna = IloscDostepna - 1, Wypozyczenia = Wypozyczenia + 1 WHERE Id_ksiazki = :id AND IloscDostepna > 0");
 	kwerenda1.bindValue(":id", id_k);
 
 	kwerenda2.prepare("INSERT INTO Wypozyczenia(Id_uzyt, Id_ksiazki, DataWypozyczenia, TerminOddania, Status)"
-		"VALUES(:id_u, :id_k, :wyp, :odd, 'Wypoøyczona');");
+		"VALUES(:id_u, :id_k, :wyp, :odd, 'Wypo≈ºyczona');");
 	kwerenda2.bindValue(":id_u", id_u);
 	kwerenda2.bindValue(":id_k", id_k);
 	kwerenda2.bindValue(":wyp", QDate::currentDate());
 	kwerenda2.bindValue(":odd", QDate::currentDate().addDays(14));
 
 	kwerenda3.prepare("INSERT INTO Historia(Id_uzyt, Id_ksiazki, Akcja, Data) "
-		"VALUES(:id_u, :id_k, 'Wypoøyczenie ksiπøki', :data);");
+		"VALUES(:id_u, :id_k, 'Wypo≈ºyczenie ksiƒÖ≈ºki', :data);");
 	kwerenda3.bindValue(":id_u", id_u);
 	kwerenda3.bindValue(":id_k", id_k);
 	kwerenda3.bindValue(":data", QDate::currentDate());
@@ -482,27 +545,26 @@ bool Baza::wypozyczKsiazke(int id_u, int id_k)
 	if (kwerenda1.exec() && kwerenda1.numRowsAffected() > 0 && kwerenda2.exec() && kwerenda3.exec())
 	{
 		QSqlDatabase::database().commit(); // Zatwierdzenie zmian
-		qDebug() << "Pomyúlnie wypozyczono!";
+		qDebug() << "Pomy≈õlnie wypozyczono!";
 		return true;
 	}
 	else
 	{
 		QSqlDatabase::database().rollback(); // W razie erroru wycofanie
-		qDebug() << "B≥ad wypoøyczenia ksiπøki: " << kwerenda1.lastError().text() << kwerenda2.lastError().text() << kwerenda3.lastError().text();
+		qDebug() << "B≈Çad wypo≈ºyczenia ksiƒÖ≈ºki: " << kwerenda1.lastError().text() << kwerenda2.lastError().text() << kwerenda3.lastError().text();
 		return false;
 	}
 
 }
 
-bool Baza::dodajZwrot(int id_u, int id_k)
+bool Baza::dodajZwrot(int id_u, int id_k, int id_w)
 {
 	QSqlDatabase::database().transaction();
 
 	QSqlQuery kwerenda1, kwerenda2, kwerenda3;
 
-	kwerenda1.prepare("UPDATE Wypozyczenia SET Status = 'ZwrÛcona' WHERE Id_uzyt = :id_u AND Id_ksiazki = :id_k and Status = 'Wypoøyczona'");
-	kwerenda1.bindValue(":id_u", id_u);
-	kwerenda1.bindValue(":id_k", id_k);
+	kwerenda1.prepare("UPDATE Wypozyczenia SET Status = 'Zwr√≥cona' WHERE Id_wyp = :id_w");
+	kwerenda1.bindValue(":id_w", id_w);
 
 	kwerenda2.prepare("INSERT INTO Zwrot(id_uzyt, Id_ksiazki, DataOddania)"
 		"VALUES(:id_u, :id_k, :odd);");
@@ -511,7 +573,7 @@ bool Baza::dodajZwrot(int id_u, int id_k)
 	kwerenda2.bindValue(":odd", QDate::currentDate());
 
 	kwerenda3.prepare("INSERT INTO Historia(Id_uzyt, Id_ksiazki, Akcja, Data) "
-		"VALUES(:id_u, :id_k, 'Zwrot ksiπøki', :data);");
+		"VALUES(:id_u, :id_k, 'Zwrot ksiƒÖ≈ºki', :data);");
 	kwerenda3.bindValue(":id_u", id_u);
 	kwerenda3.bindValue(":id_k", id_k);
 	kwerenda3.bindValue(":data", QDate::currentDate());
@@ -519,46 +581,72 @@ bool Baza::dodajZwrot(int id_u, int id_k)
 	if (kwerenda1.exec() && kwerenda1.numRowsAffected() > 0 && kwerenda2.exec() && kwerenda3.exec())
 	{
 		QSqlDatabase::database().commit(); // Zatwierdzenie zmian
-		qDebug() << "Pomyúlnie zwrÛcono!";
+		qDebug() << "Pomy≈õlnie zwr√≥cono!";
 		return true;
 	}
 	else
 	{
 		QSqlDatabase::database().rollback(); // W razie erroru wycofanie
-		qDebug() << "B≥ad zwrotu ksiπøki: " << kwerenda1.lastError().text() << kwerenda2.lastError().text() << kwerenda3.lastError().text();
+		qDebug() << "B≈Çad zwrotu ksiƒÖ≈ºki: " << kwerenda1.lastError().text() << kwerenda2.lastError().text() << kwerenda3.lastError().text();
 		return false;
 	}
 }
 
-QList<QString> Baza::pobierzZwroty()
+QList<DaneZwrotu> Baza::pobierzZwroty()
 {
 	QSqlQuery kwerenda;
-	QList<QString> zwroty;
+	QList<DaneZwrotu> zwroty;
 
-	if (!kwerenda.exec("SELECT z.Id_zwrot, u.Imie, u.Nazwisko, k.Nazwa, z.DataOddania FROM Zwrot z JOIN Uzytkownicy u on u.Id_dane = z.Id_uzyt join "
+	if (!kwerenda.exec("SELECT z.Id_zwrot, z.Id_uzyt, z.id_ksiazki, u.Imie, u.Nazwisko, k.Nazwa, z.DataOddania FROM Zwrot z JOIN Uzytkownicy u on u.Id_dane = z.Id_uzyt join "
 		"BazaKsiazek k on k.Id_ksiazki = z.Id_Ksiazki")) {
-		qDebug() << "B≥πd pobierania zwrotÛw: " << kwerenda.lastError().text();
+		qDebug() << "B≈ÇƒÖd pobierania zwrot√≥w: " << kwerenda.lastError().text();
 		return zwroty;
 	}
 
 	while (kwerenda.next())
 	{
-		int id_z = kwerenda.value("Id_zwrot").toInt();
-		/*int id_u = kwerenda.value("Id_uzyt").toInt();
-		int id_k = kwerenda.value("Id_ksiazki").toInt();*/
-		QString im = kwerenda.value("Imie").toString();
-		QString naz = kwerenda.value("Nazwisko").toString();
-		QString ksi = kwerenda.value("Nazwa").toString();
-		QString odd = kwerenda.value("DataOddania").toString();
-
-		/*DaneUzytkownika temp0 = pobierzKonto(id_u);
-		DaneKsiazki temp1 = pobierzKsiazke(id_k);*/
-		
-		QString temp = QString("%1. Uøytkownik %2 %3 zwrÛci≥: %4 w dniu %5").arg(id_z).arg(im).arg(naz).arg(ksi).arg(odd);
+		DaneZwrotu temp;
+		temp.id_z = kwerenda.value("Id_zwrot").toInt();
+		temp.id_u = kwerenda.value("Id_uzyt").toInt();
+		temp.id_k = kwerenda.value("Id_ksiazki").toInt();
+		temp.im = kwerenda.value("Imie").toString();
+		temp.naz = kwerenda.value("Nazwisko").toString();
+		temp.nazwa = kwerenda.value("Nazwa").toString();
+		temp.oddanie = kwerenda.value("DataOddania").toDate();
+	
 		zwroty.append(temp);
 	}
 
 	return zwroty;
+}
+
+DaneZwrotu Baza::pobierzZwrot(int id_z)
+{
+	QSqlQuery kwerenda;
+	DaneZwrotu zwrot;
+
+	kwerenda.prepare("SELECT z.Id_zwrot, z.Id_uzyt, z.Id_ksiazki, u.Imie, u.Nazwisko, k.Nazwa, z.DataOddania FROM Zwrot z JOIN Uzytkownicy u on u.Id_dane = z.Id_uzyt join "
+		"BazaKsiazek k on k.Id_ksiazki = z.Id_Ksiazki WHERE Id_zwrot = :id_z");
+	kwerenda.bindValue(":id_z", id_z);
+
+
+	if (!kwerenda.exec()) {
+		qDebug() << "B≈ÇƒÖd pobierania zwrotu: " << kwerenda.lastError().text();
+		return zwrot;
+	}
+
+	if (kwerenda.next())
+	{
+		zwrot.id_z = kwerenda.value("Id_zwrot").toInt();
+		zwrot.id_u = kwerenda.value("Id_uzyt").toInt();
+		zwrot.id_k = kwerenda.value("Id_ksiazki").toInt();
+		zwrot.im = kwerenda.value("Imie").toString();
+		zwrot.naz = kwerenda.value("Nazwisko").toString();
+		zwrot.nazwa = kwerenda.value("Nazwa").toString();
+		zwrot.oddanie = kwerenda.value("DataOddania").toDate();
+	}
+
+	return zwrot;
 }
 
 bool Baza::akceptujZwrot(int id_u, int id_z, int id_k)
@@ -581,13 +669,13 @@ bool Baza::akceptujZwrot(int id_u, int id_z, int id_k)
 	if (kwerenda1.exec() && kwerenda1.numRowsAffected() > 0 && kwerenda2.exec() && kwerenda3.exec())
 	{
 		QSqlDatabase::database().commit();
-		qDebug() << "Pomyúlnie przyjÍto!";
+		qDebug() << "Pomy≈õlnie przyjƒôto!";
 		return true;
 	}
 	else
 	{
 		QSqlDatabase::database().rollback();
-		qDebug() << "B≥ad przyjÍcia ksiπøki: " << kwerenda1.lastError().text() << kwerenda2.lastError().text();
+		qDebug() << "B≈Çad przyjƒôcia ksiƒÖ≈ºki: " << kwerenda1.lastError().text() << kwerenda2.lastError().text();
 		return false;
 	}
 }
