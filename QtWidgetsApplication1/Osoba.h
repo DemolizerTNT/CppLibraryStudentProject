@@ -8,10 +8,11 @@ using namespace std;
 class Osoba
 {
 protected:
-	Baza& db;
+	Baza db;
 	DaneUzytkownika daneKonta;
 
 public:
+	Osoba();
 	Osoba(Baza& dbRef, DaneUzytkownika daneKonta);
 	virtual ~Osoba();
 
