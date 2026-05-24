@@ -5,7 +5,7 @@ Baza::Baza() {};
 
 Baza::~Baza()
 {
-	if (db.isOpen()) db.close();
+
 }
 
 bool Baza::createTables()
