@@ -679,3 +679,26 @@ bool Baza::akceptujZwrot(int id_u, int id_z, int id_k)
 		return false;
 	}
 }
+
+QMap<QString, int> Baza::pobierzStatystyki()
+{
+	QMap<QString, int> dane;
+	QSqlQuery kwerenda;
+
+	kwerenda.prepare("SELECT Kategoria, SUM(Wypozyczenia) FROM BazaKsiazek group by kategoria having SUM(Wypozyczenia) > 0");
+
+	if (!kwerenda.exec())
+	{
+		qDebug() << "Błąd pobierania statystyk: " << kwerenda.lastError().text();
+		return dane;
+	}
+
+	while (kwerenda.next())
+	{
+		QString kategoria = kwerenda.value(0).toString();
+		int ilosc = kwerenda.value(1).toInt();
+		dane.insert(kategoria, ilosc);
+	}
+
+	return dane;
+}

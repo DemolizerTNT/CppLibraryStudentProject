@@ -93,4 +93,6 @@ public:
 	QList<DaneZwrotu> pobierzZwroty(); // Wypisuje wszystkie zwroty
 	DaneZwrotu pobierzZwrot(int id_z); // Wypisuje konkretny zwrot
 	bool akceptujZwrot(int id_u, int id_z, int id_k); // Potwierdza z ID tabeli Zwroty
+
+	QMap<QString, int> pobierzStatystyki();
 };

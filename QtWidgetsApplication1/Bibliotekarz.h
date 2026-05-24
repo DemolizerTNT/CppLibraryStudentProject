@@ -25,4 +25,6 @@ public:
 	QList<DaneZwrotu> zwrotyLista(); 
 	DaneZwrotu pobZwr(int id_z);
 	bool akceptZwroty(int id_u, int id_z, int id_k);
+
+	QMap<QString, int> statystyki();
 };
