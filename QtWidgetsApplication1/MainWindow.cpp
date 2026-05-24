@@ -6,6 +6,17 @@
 #include "Bibliotekarz.h"
 #include "Uzytkownik.h"
 
+#include <QStringList>
+#include <QLabel>
+#include <QPixmap>
+#include <QIcon>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QTableWidget>
+#include <QHeaderView>
+#include <QProgressBar>
+#include <QMap>
+
 MainWindow::MainWindow(QWidget* parent)
 	: QMainWindow(parent)
 {
@@ -62,6 +73,7 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(ui.allBooksList, &QTableWidget::cellDoubleClicked, this, &MainWindow::booksData);
 	connect(ui.allBooksEditClose, &QPushButton::clicked, this, &MainWindow::closeEditBook);
 	//connect(ui.historyFilterBtn, &QPushButton::clicked, this, &MainWindow::booksFiltler);
+	connect(ui.booksStatistics, &QPushButton::clicked, this, &MainWindow::booksStatisticsBtn);
 	// editBookData
 	connect(ui.editBookBtn, &QPushButton::clicked, this, &MainWindow::editBookDateBtn);
 	
@@ -233,7 +245,9 @@ void MainWindow::allBorrowsBtn()
 		ui.allBorrowList->setItem(row, 2, new QTableWidgetItem(QString::number(wypo.id_k)));
 		ui.allBorrowList->setItem(row, 3, new QTableWidgetItem(wypo.wypoz.toString("dd-MM-yyyy")));
 		ui.allBorrowList->setItem(row, 4, new QTableWidgetItem(wypo.terOdd.toString("dd-MM-yyyy")));
-		ui.allBorrowList->setItem(row, 5, new QTableWidgetItem(wypo.Status));
+		QString status = wypo.Status;
+		if (QDate::currentDate() > wypo.terOdd) status = "Zaległe!";
+		ui.allBorrowList->setItem(row, 5, new QTableWidgetItem(status));
 	}
 	ui.allBorrowList->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
@@ -408,6 +422,108 @@ void MainWindow::allBorrowsSpecificBtn()
 	}
 	ui.allBorrowList->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
+}
+
+
+void MainWindow::booksStatisticsBtn()
+{
+	Bibliotekarz bib;
+	QMap<QString, int> statystyka = bib.statystyki();
+
+	if (statystyka.isEmpty())
+	{
+		qDebug() << "Brak danych do wyświetlenia";
+		return;
+	}
+
+	QDialog* statsDialog = new QDialog(this);
+	statsDialog->setWindowTitle("Statystyki wypożyczonych kategorii");
+	statsDialog->resize(600, 450);
+
+	// Kolory
+	QStringList kolory = { "#e74c3c", "#3498db", "#2ecc71", "#f1c40f", "#9b59b6", "#e67e22", "#1abc9c", "#34495e" };
+
+	int maxWartosc = 0;
+	int sumaWypozyczen = 0;
+	for (auto it = statystyka.begin(); it != statystyka.end(); ++it)
+	{
+		sumaWypozyczen += it.value();
+		if (it.value() > maxWartosc)
+		{
+			maxWartosc = it.value();
+		}
+	}
+
+	// Wspólny panel
+	QWidget* topBarWidget = new QWidget(statsDialog);
+	topBarWidget->setFixedHeight(35); 
+	QHBoxLayout* topBarLayout = new QHBoxLayout(topBarWidget);
+	topBarLayout->setContentsMargins(0, 0, 0, 0); 
+	topBarLayout->setSpacing(0); 
+
+	QTableWidget* table = new QTableWidget(statsDialog);
+	table->setColumnCount(3);
+	table->setHorizontalHeaderLabels({ "Kategoria", "Ilość", "Udział" });
+	table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	table->setRowCount(statystyka.size());
+
+	int row = 0;
+	int colorIndex = 0;
+	for (auto it = statystyka.begin(); it != statystyka.end(); ++it)
+	{
+		QString aktualnyKolor = kolory[colorIndex % kolory.size()];
+
+		double procent = ((double)it.value() / sumaWypozyczen) * 100.0;
+		QLabel* chunk = new QLabel();
+		chunk->setStyleSheet(QString("background-color: %1; color: white; font-weight: bold;").arg(aktualnyKolor));
+		chunk->setAlignment(Qt::AlignCenter);
+		chunk->setToolTip(QString("%1: %2%").arg(it.key()).arg(QString::number(procent, 'f', 1)));
+
+		if (procent > 5.0) {
+			chunk->setText(QString::number(procent, 'f', 1) + "%");
+		}
+
+		topBarLayout->addWidget(chunk, it.value());
+		QTableWidgetItem* catItem = new QTableWidgetItem(it.key());
+		QPixmap pixmap(15, 15);
+		pixmap.fill(QColor(aktualnyKolor));
+		catItem->setIcon(QIcon(pixmap));
+		table->setItem(row, 0, catItem);
+
+		QTableWidgetItem* valItem = new QTableWidgetItem(QString::number(it.value()));
+		valItem->setTextAlignment(Qt::AlignCenter);
+		table->setItem(row, 1, valItem);
+
+		QProgressBar* bar = new QProgressBar();
+		bar->setRange(0, maxWartosc);
+		bar->setValue(it.value());
+		bar->setTextVisible(false);
+
+		bar->setStyleSheet(QString("QProgressBar { border: 1px solid #bdc3c7; border-radius: 3px; background-color: #ecf0f1; }"
+			"QProgressBar::chunk { background-color: %1; width: 10px; }").arg(aktualnyKolor));
+
+		table->setCellWidget(row, 2, bar);
+
+		row++;
+		colorIndex++;
+	}
+
+	table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+	table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+
+	QVBoxLayout* layout = new QVBoxLayout(statsDialog);
+
+	QLabel* titleLabel = new QLabel("<b>Całkowity udział wypożyczeń:</b>");
+	layout->addWidget(titleLabel);
+	layout->addWidget(topBarWidget);
+	layout->addSpacing(10); 
+	layout->addWidget(table);
+
+	statsDialog->setLayout(layout);
+
+	statsDialog->exec();
+	delete statsDialog;
 }
 
 void MainWindow::booksBtn()
@@ -952,29 +1068,3 @@ void MainWindow::booksData(int row, int column)
 	ui.editAllBooksDesc->setText(dane.opis);
 }
 
-//void MainWindow::booksFiltler()
-//{
-//	const QString& text = ui.historyFilter->text();
-//
-//	for (int row = 0; row < ui.historyList->rowCount(); row++)
-//	{
-//		bool match = false;
-//
-//		QTableWidgetItem* nameItem = ui.historyList->item(row, 3); //  Id użytkownika
-//		QTableWidgetItem* authorItem = ui.historyList->item(row, 4); // Nazwa książki
-//		QTableWidgetItem* categoryItem = ui.historyList->item(row, 5); // Akcja
-//
-//		QString name = nameItem ? nameItem->text() : "";
-//		QString author = authorItem ? authorItem->text() : "";
-//		QString category = categoryItem ? categoryItem->text() : "";
-//
-//		if (name.contains(text, Qt::CaseInsensitive) || //Insensitive - wielkość obojętna
-//			author.contains(text, Qt::CaseInsensitive) ||
-//			category.contains(text, Qt::CaseInsensitive))
-//		{
-//			match = true;
-//		}
-//
-//		ui.allLibraryList->setRowHidden(row, !match); // ukrywamy niepotrzebne
-//	}
-//}

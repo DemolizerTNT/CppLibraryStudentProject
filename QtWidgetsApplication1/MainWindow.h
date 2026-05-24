@@ -57,6 +57,9 @@ public:
 	// allBorrows
 	void allBorrowsSpecificBtn();
 
+	// books
+	void booksStatisticsBtn();
+
 
 
 
@@ -102,7 +105,7 @@ public slots:
 		if (rola == "Bibliotekarz") {
 			librarianBtns();
 			//ui.stackedWidget->setCurrentWidget(ui.allBorrowsPanel);
-			allAccountsBtn();
+			allBorrowsBtn();
 		}
 		else
 		{

@@ -73,3 +73,8 @@ bool Bibliotekarz::akceptZwroty(int id_u, int id_z, int id_k)
 {
 	return db.akceptujZwrot(id_u, id_z, id_k);
 }
+
+QMap<QString, int> Bibliotekarz::statystyki()
+{
+	return db.pobierzStatystyki();
+}
