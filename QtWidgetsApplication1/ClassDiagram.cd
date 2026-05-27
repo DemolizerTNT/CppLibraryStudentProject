@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Baza" Collapsed="true">
+    <Position X="8.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAQMCAAgAAJAIADAgEAMACgBCJCBgAEAAQ=</HashCode>
+      <FileName>Baza.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bibliotekarz">
+    <Position X="5.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAgQBAgAAAAAAACAAAAQEAEAAAgAACAAAAAgwAIAA=</HashCode>
+      <FileName>Bibliotekarz.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Osoba" Collapsed="true">
+    <Position X="4.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AqAAAAAAABAQAAAAQIAAAAAAAAAAAAAYAAAAAAAAAAA=</HashCode>
+      <FileName>Osoba.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Uzytkownik" Collapsed="true">
+    <Position X="3.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAEAAAAQAAAABAAAAAAAAAAAAAIAAIIAAA=</HashCode>
+      <FileName>Uzytkownik.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MainWindow" Collapsed="true">
+    <Position X="11.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>SRAAAAECAAEEcU4JISUFAMEAAwAACAoA7MAgAECTAAA=</HashCode>
+      <FileName>MainWindow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LoginWindow" Collapsed="true">
+    <Position X="10" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAEAAAAAAAAAAAAAAAgAAAAAAIAABAAAA=</HashCode>
+      <FileName>LoginWindow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="DaneUzytkownika" Collapsed="true">
+    <Position X="11.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAADiAAAAAAABAAAAAAAAAAAAAACAAAE=</HashCode>
+      <FileName>Baza.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DaneKsiazki" Collapsed="true">
+    <Position X="10" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAEAAAAAAgBoQAAAAAAAAAAAAAAAAIIAA=</HashCode>
+      <FileName>Baza.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DaneHistorii" Collapsed="true">
+    <Position X="8.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAEgBAAAAAAgAAAAAAAAAAAAAQAAAAIAA=</HashCode>
+      <FileName>Baza.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DaneZwrotu" Collapsed="true">
+    <Position X="10" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAggAAAAAAEABIAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Baza.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DaneWypozyczen">
+    <Position X="8.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAEABAAQAACABAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Baza.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
