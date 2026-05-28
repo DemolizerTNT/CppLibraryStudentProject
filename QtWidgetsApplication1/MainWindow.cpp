@@ -88,6 +88,10 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(ui.returnListCloseBtn, &QPushButton::clicked, this, &MainWindow::returnsPanelCloseBtn);
 	connect(ui.returnListAcceptBtn, &QPushButton::clicked, this, &MainWindow::borrowsReturnsAcceptBtn);
 
+
+	//myData
+	connect(ui.saveMyBtn, &QPushButton::clicked, this, &MainWindow::updateData);
+	
 	
 
 	
@@ -1066,5 +1070,35 @@ void MainWindow::booksData(int row, int column)
 	ui.allBooksPanel->show();
 	ui.allBooksName_2->setText("Identyfikator: " + QString::number(dane.id_k) + " --- " + dane.nazwa);
 	ui.editAllBooksDesc->setText(dane.opis);
+}
+
+
+void MainWindow::updateData()
+{
+	Baza db;
+	DaneUzytkownika noweDane = db.pobierzKonto(activeId);
+	
+	noweDane.imie = ui.editMyName->text();
+	noweDane.nazwisko = ui.editMyLast->text();
+	noweDane.email = ui.editMyEmail->text();
+
+	
+	if (ui.editMyPassword->text() != ui.editMyPassword2->text()) qDebug() << "Błędne hasło";
+	else
+	{
+		noweDane.haslo = ui.editMyPassword->text();
+	}
+
+	Uzytkownik uzy(db, noweDane);
+
+	if (uzy.edycjaKonta(noweDane))
+	{
+		qDebug() << "Udało się zaktualizować dane konta!";
+	}
+	else
+	{
+		qDebug() << "Błąd zapisu danych.";
+	}
+
 }
 

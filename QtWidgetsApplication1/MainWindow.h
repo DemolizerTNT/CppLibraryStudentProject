@@ -60,6 +60,8 @@ public:
 	// books
 	void booksStatisticsBtn();
 
+	
+
 
 
 
@@ -85,6 +87,8 @@ private slots:
 	void returnsPanelCloseBtn();
 	void borrowsReturnsAcceptBtn();
 
+	//myData
+	void updateData();
 
 private:
 	Ui::MainWindowClass ui;

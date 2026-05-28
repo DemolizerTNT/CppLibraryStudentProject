@@ -234,7 +234,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      </rect>
     </property>
     <property name="currentIndex">
-     <number>4</number>
+     <number>7</number>
     </property>
     <widget class="QWidget" name="borrowsPanel">
      <widget class="QTableWidget" name="borrowList">
@@ -1961,7 +1961,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <property name="geometry">
        <rect>
         <x>150</x>
-        <y>300</y>
+        <y>310</y>
         <width>221</width>
         <height>51</height>
        </rect>
